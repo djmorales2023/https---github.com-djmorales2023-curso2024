@@ -48,3 +48,6 @@ spec:
             port: 5000      # Puerto de la prueba de vida
           initialDelaySeconds: 5  # Tiempo de espera antes de la primera verificación
           periodSeconds: 10       # Frecuencia de la prueba de vida
+
+
+#tarea curso
