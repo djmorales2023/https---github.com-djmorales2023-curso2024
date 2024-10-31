@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dario-namespace
+  labels:
+    istio-injection: enabled
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mi-microservicio
+  namespace: dario-namespace  # Incluye el Deployment en el namespace dario-namespace
+  labels:
+    app: mi-microservicio
+spec:
+  replicas: 2  # Número de réplicas del microservicio
+  selector:
+    matchLabels:
+      app: mi-microservicio
+  template:
+    metadata:
+      labels:
+        app: mi-microservicio
+    spec:
+      containers:
+      - name: mi-microservicio
+        image: djmorales7/py:v1  # Reemplaza con la imagen de tu microservicio
+        ports:
+        - containerPort: 5000  # Expone el puerto 5000
+        resources:          
+          requests:
+            memory: "128Mi"  # Solicitud mínima de memoria
+            cpu: "250m"      # Solicitud mínima de CPU
+          limits:
+            memory: "256Mi"  # Límite de memoria
+            cpu: "500m"      # Límite de CPU
+        readinessProbe:
+          httpGet:
+            path: /  # Ruta para la prueba de disponibilidad (ajusta según tu app)
+            port: 5000    # Puerto de la prueba de disponibilidad
+          initialDelaySeconds: 5  # Tiempo antes de la primera verificación de readiness
+          periodSeconds: 10       # Frecuencia de la prueba de disponibilidad
+        livenessProbe:
+          httpGet:
+            path: /  # Ruta de prueba de vida (modifica según tu aplicación)
+            port: 5000      # Puerto de la prueba de vida
+          initialDelaySeconds: 5  # Tiempo de espera antes de la primera verificación
+          periodSeconds: 10       # Frecuencia de la prueba de vida
